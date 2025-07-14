@@ -1,0 +1,28 @@
+spring:
+  application:
+    name: ${SPRING_APP_NAME:security}
+  profiles:
+    active: default
+  datasource:
+    url: jdbc:mysql://${DATABASE_HOST:localhost}:${DATABASE_PORT:3305}/${DATABASE_NAME:credit-card-system}
+    username: ${DATABASE_USERNAME:root}
+    password: ${DATABASE_PASSWORD:root}
+  jpa:
+    # We only show our sql when it's not in production environment (cause it creates a lot of logs)
+    show-sql: ${JPA_SHOW_SQL:true}
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: ${HIBERNATE_FORMAT_SQL:true}
+#  config:
+#    import: application-prod.yml
+
+logging:
+  level:
+    root: INFO
+    com.minibank: DEBUG
+    org.springframework.security: TRACE
+  pattern:
+    console: "%green(%d{HH:mm:ss.SSS}) %blue(%-5level) %red([%thread]) %yellow(%logger{15}.%M\\(%L\\)) - %msg%n%ex"
+
