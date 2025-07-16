@@ -1,6 +1,15 @@
 package com.minibank.creditcard.model;
 
-public class User {
+import jakarta.persistence.Entity;
+import lombok.*;
+
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+@Entity(name = "users")
+public class AppUser {
 
   // id (UUID)
   // username: Unique login name

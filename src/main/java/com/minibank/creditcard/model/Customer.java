@@ -1,5 +1,14 @@
 package com.minibank.creditcard.model;
 
+import jakarta.persistence.Entity;
+import lombok.*;
+
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+@Entity(name = "customers")
 public class Customer {
 
   // id (UUID): Unique identifier

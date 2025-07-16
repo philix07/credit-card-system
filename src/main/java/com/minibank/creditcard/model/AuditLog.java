@@ -1,5 +1,14 @@
 package com.minibank.creditcard.model;
 
+import jakarta.persistence.Entity;
+import lombok.*;
+
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+@Entity(name = "audit_log")
 public class AuditLog {
 
   // id (UUID)
@@ -10,4 +19,5 @@ public class AuditLog {
   // newValue: JSON snapshot
   // changedBy: Admin or service
   // timestamp
+
 }
