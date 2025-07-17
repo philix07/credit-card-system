@@ -3,9 +3,13 @@ package com.minibank.creditcard.model;
 import com.minibank.creditcard.model.enums.BillingStatus;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -25,26 +29,16 @@ public class Repayment {
   @GeneratedValue(strategy = GenerationType.UUID)
   private UUID id;
 
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "card_id")
-  private Card card;
+  @OneToOne
+  @JoinColumn(name = "billing_id", nullable = false)
+  private BillingCycle billingCycle;
 
-  private LocalDate startDate;
-  private LocalDate endDate;
-  private LocalDate dueDate;
+  @OneToMany(mappedBy = "repayment", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<RepaymentDetail> details = new ArrayList<>();
 
-  private BigDecimal totalDue;
-  private BigDecimal unpaidFromLastCycle;
-  private BigDecimal interestApplied;
-  private BigDecimal minimumPayment;
-  private BigDecimal interestRate;
+  @Column(nullable = false, precision = 18, scale = 0)
+  private BigDecimal totalPaid;
 
-  @Enumerated(EnumType.STRING)
-  private BillingStatus status; // OPEN, GENERATED, PAID, OVERDUE
-
-  private LocalDate generatedAt;
-
-  @OneToOne(mappedBy = "billingCycle", cascade = CascadeType.ALL, orphanRemoval = true)
-  private RepaymentDetail repaymentDetail;
+  private LocalDateTime lastPaymentDate;
 
 }

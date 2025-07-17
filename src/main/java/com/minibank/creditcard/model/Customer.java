@@ -1,7 +1,13 @@
 package com.minibank.creditcard.model;
 
-import jakarta.persistence.Entity;
+import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -11,14 +17,47 @@ import lombok.*;
 @Entity(name = "customers")
 public class Customer {
 
-  // id (UUID): Unique identifier
-  // fullName: Full legal name
-  // email: Contact email (unique)
-  // phoneNumber: Mobile number (for OTP/alerts)
-  // address: Residential address
-  // dateOfBirth: For age validation & credit profiling
-  // kycStatus (enum: PENDING, APPROVED, REJECTED)
-  // riskProfile (enum: LOW, MEDIUM, HIGH): Affects credit limit
-  // createdAt, updatedAt
+  @Id
+  @GeneratedValue(strategy = GenerationType.UUID)
+  private UUID id;
 
+  @Column(nullable = false)
+  private String fullName;
+
+  @Column(nullable = false, unique = true)
+  private String email;
+
+  @Column(nullable = false, unique = true)
+  private String phoneNumber;
+
+  @Column(length = 512)
+  private String address;
+
+  private LocalDate dateOfBirth;
+
+  @Enumerated(EnumType.STRING)
+  @Column(nullable = false)
+  private KycStatus kycStatus;
+
+  @Enumerated(EnumType.STRING)
+  @Column(nullable = false)
+  private RiskProfile riskProfile;
+
+  @CreationTimestamp
+  private LocalDateTime createdAt;
+
+  @UpdateTimestamp
+  private LocalDateTime updatedAt;
+
+  // Enums for RiskProfile statuses
+  public enum KycStatus {
+    PENDING, APPROVED, REJECTED
+  }
+
+  // Enums for RiskProfile statuses
+  public enum RiskProfile {
+    LOW, MEDIUM, HIGH
+  }
 }
+
+

@@ -26,18 +26,18 @@ public class RepaymentDetail {
   @GeneratedValue(strategy = GenerationType.UUID)
   private UUID id;
 
-  @OneToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "billing_cycle_id")
-  private BillingCycle billingCycle;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "repayment_id", nullable = false)
+  private Repayment repayment;
 
-  @OneToMany(mappedBy = "repaymentSummary", cascade = CascadeType.ALL, orphanRemoval = true)
-  private List<Repayment> repayments = new ArrayList<>();
-
-  private BigDecimal totalPaid;
-  private LocalDate lastPaymentDate;
+  @Column(nullable = false, precision = 18, scale = 0)
+  private BigDecimal paidAmount;
 
   @Enumerated(EnumType.STRING)
-  private PaymentStatus paymentStatus; // FULL_PAID, MINIMUM_PAID, etc.
+  private RepaymentType paymentStatus;
 
+  public enum RepaymentType {
+    FULL, MINIMUM, PARTIAL
+  }
 
 }

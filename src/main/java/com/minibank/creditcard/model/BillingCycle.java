@@ -21,15 +21,6 @@ import java.util.UUID;
 @Entity(name = "billing_cycles")
 public class BillingCycle {
 
-  // id (UUID)
-  // cardId: Foreign key to Card
-  // startDate, endDate: Defines the billing window
-  // dueDate: Payment deadline (usually 10 days after end)
-  // totalSpending: Total spending amount in this cycle
-  // totalDue: Total unpaid amount in this cycle
-  // minPayment: Usually 10% of totalDue
-  // status (enum: OPEN, GENERATED, PAID, OVERDUE)
-
   @Id
   @GeneratedValue(strategy = GenerationType.UUID)
   private UUID id;
@@ -39,21 +30,20 @@ public class BillingCycle {
   private Card card;
 
   private LocalDate startDate;
+
   private LocalDate endDate;
+
   private LocalDate dueDate;
 
+  @Column(nullable = false, precision = 18, scale = 0)
   private BigDecimal totalDue;
-  private BigDecimal unpaidFromLastCycle;
-  private BigDecimal interestApplied;
-  private BigDecimal minimumPayment;
-  private BigDecimal interestRate;
+
+  private LocalDate generatedAt;
 
   @Enumerated(EnumType.STRING)
   private BillingStatus status; // OPEN, GENERATED, PAID, OVERDUE
 
-  private LocalDate generatedAt;
-
   @OneToOne(mappedBy = "billingCycle", cascade = CascadeType.ALL, orphanRemoval = true)
-  private RepaymentDetail repaymentDetail;
+  private Repayment repayment;
 
 }
