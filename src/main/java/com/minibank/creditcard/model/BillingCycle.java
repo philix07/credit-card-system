@@ -1,12 +1,10 @@
 package com.minibank.creditcard.model;
 
-import com.minibank.creditcard.model.enums.BillingStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.UUID;
 
 /**
  * Represents a specific billing cycle for a credit card.
@@ -37,9 +35,13 @@ public class BillingCycle extends BaseEntity{
   private LocalDate generatedAt;
 
   @Enumerated(EnumType.STRING)
-  private BillingStatus status; // OPEN, GENERATED, PAID, OVERDUE
+  private BillingStatus status;
 
   @OneToOne(mappedBy = "billingCycle", cascade = CascadeType.ALL, orphanRemoval = true)
   private Repayment repayment;
+
+  public enum BillingStatus {
+    GENERATED, FULLY_PAID, PARTIALLY_PAID, OVERDUE
+  }
 
 }

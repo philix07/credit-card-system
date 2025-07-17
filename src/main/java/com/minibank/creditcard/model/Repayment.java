@@ -1,9 +1,7 @@
 package com.minibank.creditcard.model;
 
-import com.minibank.creditcard.model.enums.BillingStatus;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

@@ -1,12 +1,10 @@
 package com.minibank.creditcard.model;
 
-import com.minibank.creditcard.model.enums.CardStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.UUID;
 
 @Getter
 @Setter
@@ -39,7 +37,7 @@ public class Card extends BaseEntity{
 
   @Enumerated(EnumType.STRING)
   @Column(nullable = false)
-  private CardStatus status; // INACTIVE, ACTIVE, BLOCKED, EXPIRED
+  private CardStatus status;
 
   private LocalDate issuedDate;
 
@@ -49,6 +47,10 @@ public class Card extends BaseEntity{
   @PrePersist
   protected void onCreate() {
     this.issuedDate = LocalDate.now();
+  }
+
+  public enum CardStatus {
+    INACTIVE, ACTIVE, BLOCKED, EXPIRED
   }
 
 }

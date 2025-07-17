@@ -1,17 +1,11 @@
 package com.minibank.creditcard.model;
 
-import com.minibank.creditcard.model.enums.TransactionStatus;
-import com.minibank.creditcard.model.enums.TransactionType;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.data.annotation.CreatedDate;
 
 import java.math.BigDecimal;
 import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Getter
 @Setter
@@ -59,7 +53,16 @@ public class Transaction extends BaseEntity {
   @Column(nullable = false)
   private RepaymentStatus repaymentStatus;
 
+  public enum TransactionType {
+    PURCHASE, ATM_WITHDRAWAL, REFUND
+  }
+
+  public enum TransactionStatus {
+    PENDING, SETTLED, DECLINED
+  }
+
   public enum RepaymentStatus {
     FULL, PARTIAL, UNPAID
   }
+
 }

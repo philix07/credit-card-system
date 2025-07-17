@@ -1,6 +1,5 @@
 package com.minibank.creditcard.model;
 
-import com.minibank.creditcard.model.enums.PaymentStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
