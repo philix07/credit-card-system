@@ -25,14 +25,12 @@ public class Customer {
   private String fullName;
 
   @Column(nullable = false, unique = true)
-  private String email;
-
-  @Column(nullable = false, unique = true)
   private String phoneNumber;
 
   @Column(length = 512)
   private String address;
 
+  @Column(nullable = false)
   private LocalDate dateOfBirth;
 
   @Enumerated(EnumType.STRING)
