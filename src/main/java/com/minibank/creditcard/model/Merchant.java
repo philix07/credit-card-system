@@ -1,9 +1,6 @@
 package com.minibank.creditcard.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.UUID;
@@ -20,13 +17,15 @@ import java.util.UUID;
 @NoArgsConstructor
 @Builder
 @Entity(name = "merchants")
-public class Merchant {
+public class Merchant extends BaseEntity{
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.UUID)
-  private UUID id;
+  @Column(nullable = false, unique = true)
+  private String email;
 
+  @Column(nullable = false)
   private String legalName;
+
+  @Column(nullable = false)
   private String address;
 
 }

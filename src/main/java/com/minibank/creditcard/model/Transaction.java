@@ -5,8 +5,10 @@ import com.minibank.creditcard.model.enums.TransactionType;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.data.annotation.CreatedDate;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -17,11 +19,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Builder
 @Entity(name = "transactions")
-public class Transaction {
-
-  @Id
-  @GeneratedValue(strategy = GenerationType.UUID)
-  private UUID id;
+public class Transaction extends BaseEntity {
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "card_id")
@@ -36,16 +34,13 @@ public class Transaction {
   @JoinColumn(name = "merchant_id")
   private Merchant merchant;
 
-  @Enumerated(EnumType.STRING)
-  private TransactionType transactionType; // PURCHASE, ATM_WITHDRAWAL, REFUND
+  @CreatedDate
+  private Instant transactionDate;
 
-  @Enumerated(EnumType.STRING)
-  private TransactionStatus transactionStatus; // PENDING, SETTLED, DECLINED
-
-  private LocalDate transactionDate;
-
+  @Column(nullable = false)
   private String itemName;
 
+  @Column(nullable = false)
   private int itemQty;
 
   @Column(nullable = false, precision = 18, scale = 0)
@@ -54,6 +49,17 @@ public class Transaction {
   @Column(nullable = false, precision = 18, scale = 0)
   private BigDecimal paidAmount = BigDecimal.ZERO;
 
-  @CreationTimestamp
-  private LocalDateTime createdAt;
+  @Enumerated(EnumType.STRING)
+  private TransactionType transactionType; // PURCHASE, ATM_WITHDRAWAL, REFUND
+
+  @Enumerated(EnumType.STRING)
+  private TransactionStatus transactionStatus; // PENDING, SETTLED, DECLINED
+
+  @Enumerated(EnumType.STRING)
+  @Column(nullable = false)
+  private RepaymentStatus repaymentStatus;
+
+  public enum RepaymentStatus {
+    FULL, PARTIAL, UNPAID
+  }
 }

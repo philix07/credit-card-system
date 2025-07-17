@@ -19,11 +19,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Builder
 @Entity(name = "billing_cycles")
-public class BillingCycle {
-
-  @Id
-  @GeneratedValue(strategy = GenerationType.UUID)
-  private UUID id;
+public class BillingCycle extends BaseEntity{
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "card_id")

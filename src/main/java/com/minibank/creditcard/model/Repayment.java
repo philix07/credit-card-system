@@ -12,9 +12,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+
 /**
- * Represents an individual repayment transaction made by a customer.
- * Payments are tied to a summary and can optionally apply to a specific past cycle.
+ * Represents a summary of how a customer repaid a specific billing cycle.
+ * Tracks total paid, payment status, and links to detailed repayments.
  */
 
 @Getter
@@ -23,11 +24,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Builder
 @Entity(name = "repayments")
-public class Repayment {
-
-  @Id
-  @GeneratedValue(strategy = GenerationType.UUID)
-  private UUID id;
+public class Repayment extends BaseEntity{
 
   @OneToOne
   @JoinColumn(name = "billing_id", nullable = false)

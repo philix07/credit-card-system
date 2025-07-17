@@ -3,6 +3,10 @@ package com.minibank.creditcard.model;
 import jakarta.persistence.Entity;
 import lombok.*;
 
+/*
+ * This class will be handled later in the end of the project
+ */
+
 @Getter
 @Setter
 @AllArgsConstructor

@@ -14,13 +14,10 @@ import java.util.UUID;
 @NoArgsConstructor
 @Builder
 @Entity(name = "cards")
-public class Card {
+public class Card extends BaseEntity{
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.UUID)
-  private UUID id;
-
-  // Owning side of the relationship. You could use customerId directly, but using a full entity allows richer joins and object navigation.
+  // Owning side of the relationship. You could use customerId directly,
+  // but using a full entity allows richer joins and object navigation.
   @OneToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "customer_id", nullable = false)
   private Customer customer;
