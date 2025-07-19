@@ -33,10 +33,7 @@ public class AppUser {
   @Column(nullable = false)
   private Role role;
 
-  @CreatedDate
-  @Column(nullable = false, updatable = false)
-  private Instant createdAt;
-
+  @Column(insertable = false)
   private Instant lastLoginAt;
 
 }
