@@ -1,5 +1,7 @@
 package com.minibank.creditcard.model;
 
+import com.minibank.creditcard.util.CardUtil;
+import com.minibank.creditcard.util.DateUtil;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -12,10 +14,8 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Builder
 @Entity(name = "cards")
-public class Card extends BaseEntity{
+public class Card extends BaseEntity {
 
-  // Owning side of the relationship. You could use customerId directly,
-  // but using a full entity allows richer joins and object navigation.
   @OneToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "customer_id", nullable = false)
   private Customer customer;
@@ -24,7 +24,7 @@ public class Card extends BaseEntity{
   private String cardNumber; // Primary Account Number (masked in API layer)
 
   @Column(nullable = false)
-  private String cvv; // Encrypted CVV (do NOT store raw CVV)
+  private String cvv; // Never store CVV (do NOT store raw CVV)
 
   @Column(nullable = false)
   private String pin; // Hashed PIN (bcrypt)
@@ -39,18 +39,14 @@ public class Card extends BaseEntity{
   @Column(nullable = false)
   private CardStatus status;
 
+  @Column(nullable = false)
   private LocalDate issuedDate;
 
   @Column(nullable = false, length = 5)
   private String expiryDate; // Format: MM/YY
 
-  @PrePersist
-  protected void onCreate() {
-    this.issuedDate = LocalDate.now();
-  }
-
   public enum CardStatus {
-    INACTIVE, ACTIVE, BLOCKED, EXPIRED
+    PENDING_APPROVAL, REJECTED, INACTIVE, ACTIVE, BLOCKED, EXPIRED
   }
 
 }

@@ -20,6 +20,9 @@ import java.util.UUID;
 @Entity(name = "customers")
 public class Customer extends BaseEntity {
 
+  @OneToOne(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
+  private Card card;
+
   @Column(nullable = false)
   private String fullName;
 
@@ -50,7 +53,7 @@ public class Customer extends BaseEntity {
 
   // Enums for RiskProfile statuses
   public enum RiskProfile {
-    LOW, MEDIUM, HIGH
+    NOT_SET, LOW, MEDIUM, HIGH
   }
 }
 
