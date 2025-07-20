@@ -1,26 +1,25 @@
 package com.minibank.creditcard.dto.response;
 
 import com.minibank.creditcard.model.Customer;
-import jakarta.persistence.Column;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-public class FetchCustomerResponseDTO {
+public class CustomerResponseDTO {
 
-  private String id;
+  private UUID id;
+  private UUID card_id;
+  private String nik;
   private String fullName;
   private String phoneNumber;
-  private String nik;
   private String address;
   private LocalDate dateOfBirth;
   private Customer.KycStatus kycStatus;

@@ -7,12 +7,12 @@ import lombok.*;
  * This class will be handled later in the end of the project
  */
 
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
-@Entity(name = "audit_log")
+//@Getter
+//@Setter
+//@AllArgsConstructor
+//@NoArgsConstructor
+//@Builder
+//@Entity(name = "audit_log")
 public class AuditLog {
 
   // id (UUID)

@@ -13,7 +13,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-public class FetchCardSummaryDTO {
+public class CardResponseDTO {
 
   private String id;
   private String cardNumber;

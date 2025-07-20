@@ -20,7 +20,12 @@ import java.util.UUID;
 @Entity(name = "customers")
 public class Customer extends BaseEntity {
 
-  @OneToOne(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
+  @OneToOne(
+    mappedBy = "customer",
+    cascade = CascadeType.ALL,
+    fetch = FetchType.LAZY,
+    optional = false
+  )
   private Card card;
 
   @Column(nullable = false)

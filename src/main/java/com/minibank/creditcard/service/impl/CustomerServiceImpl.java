@@ -1,6 +1,8 @@
 package com.minibank.creditcard.service.impl;
 
-import com.minibank.creditcard.dto.request.CustomerRegistrationRequest;
+import com.minibank.creditcard.dto.request.CreateCustomerRequest;
+import com.minibank.creditcard.dto.response.CustomerResponseDTO;
+import com.minibank.creditcard.mapper.CustomerMapper;
 import com.minibank.creditcard.model.Card;
 import com.minibank.creditcard.model.Customer;
 import com.minibank.creditcard.repository.CardRepository;
@@ -24,7 +26,7 @@ public class CustomerServiceImpl implements CustomerService {
   private final PasswordEncoder passwordEncoder;
 
   @Override
-  public void registerCustomer(CustomerRegistrationRequest registrationRequest) {
+  public CustomerResponseDTO registerCustomer(CreateCustomerRequest registrationRequest) {
     var customerDTO = registrationRequest.getCreateCustomerDTO();
     var cardDTO = registrationRequest.getCreateCardDTO();
 
@@ -44,7 +46,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     Card card = Card.builder()
       .cardNumber(CardUtil.generateCardNumber())
-      .cvv(CardUtil.generateCVV())
+      .cvv(SecurityUtil.hashElement(CardUtil.generateCVV()))
       .pin(SecurityUtil.hashElement(cardDTO.getPin()))
       .cardLimit(cardLimit)
       .availableLimit(cardLimit)
@@ -53,6 +55,10 @@ public class CustomerServiceImpl implements CustomerService {
       .status(Card.CardStatus.ACTIVE)
       .customer(customer)
       .build();
+
+    customer.setCard(card);
+    Customer savedCustomer = customerRepository.save(customer);
+    return CustomerMapper.mapCustomerToDTO(savedCustomer);
   }
 
 }

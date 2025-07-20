@@ -24,7 +24,7 @@ public class Card extends BaseEntity {
   private String cardNumber; // Primary Account Number (masked in API layer)
 
   @Column(nullable = false)
-  private String cvv; // Never store CVV (do NOT store raw CVV)
+  private String cvv; // Never store CVV (do NOT store CVV, this is for testing purpose)
 
   @Column(nullable = false)
   private String pin; // Hashed PIN (bcrypt)

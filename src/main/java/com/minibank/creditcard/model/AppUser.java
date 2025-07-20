@@ -29,12 +29,13 @@ public class AppUser {
   @Column(nullable = false)
   private String password;
 
-  @Enumerated(EnumType.STRING)
-  @Column(nullable = false)
-  private Role role;
-
   @Column(insertable = false)
   private Instant lastLoginAt;
+
+//  Fix this into a set of role later
+//  @Enumerated(EnumType.STRING)
+//  @Column(nullable = false)
+//  private Role role;
 
 }
 
