@@ -60,6 +60,7 @@ public class Customer extends BaseEntity {
   public enum RiskProfile {
     NOT_SET, LOW, MEDIUM, HIGH
   }
+
 }
 
 

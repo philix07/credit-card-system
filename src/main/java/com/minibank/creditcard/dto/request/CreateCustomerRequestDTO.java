@@ -10,7 +10,7 @@ import java.time.LocalDate;
 
 @Getter
 @NoArgsConstructor
-public class CreateCustomerRequest {
+public class CreateCustomerRequestDTO {
 
   @Valid
   @NotNull
