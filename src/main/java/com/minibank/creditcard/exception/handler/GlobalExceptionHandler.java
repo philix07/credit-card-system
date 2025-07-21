@@ -1,5 +1,6 @@
 package com.minibank.creditcard.exception.handler;
 
+import com.minibank.creditcard.exception.CustomerNotFoundException;
 import com.minibank.creditcard.exception.DuplicateNIKException;
 import com.minibank.creditcard.exception.DuplicatePhoneNumberException;
 import org.springframework.http.HttpStatus;
@@ -80,6 +81,19 @@ public class GlobalExceptionHandler {
     );
 
     return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
+  }
+
+  @ExceptionHandler(CustomerNotFoundException.class)
+  public ResponseEntity<ErrorResponse> handleCustomerNotFoundException(CustomerNotFoundException ex, WebRequest request) {
+    ErrorResponse errorResponse = new ErrorResponse(
+      HttpStatus.NOT_FOUND.value(),
+      LocalDateTime.now(),
+      ex.getClass().getSimpleName(),
+      ex.getMessage(),
+      request.getDescription(false).replace("uri=", "")
+    );
+
+    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
   }
 
 }

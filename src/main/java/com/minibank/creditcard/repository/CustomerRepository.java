@@ -27,9 +27,10 @@ public interface CustomerRepository extends JpaRepository<Customer, Long> {
   // Search by name (partial match)
   List<Customer> findByFullNameContainingIgnoreCase(String name);
 
-  // Filtering by KYC status and risk profile
+  // Filtering by KycStatus
   List<Customer> findByKycStatus(Customer.KycStatus status);
 
+  // Filtering by RiskProfile
   List<Customer> findByRiskProfile(Customer.RiskProfile profile);
 
   // Fetch only active customers with pagination

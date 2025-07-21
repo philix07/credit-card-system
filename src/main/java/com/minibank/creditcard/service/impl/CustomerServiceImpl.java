@@ -4,6 +4,7 @@ import com.minibank.creditcard.dto.request.CreateCustomerRequestDTO;
 import com.minibank.creditcard.dto.request.UpdateCustomerRequestDTO;
 import com.minibank.creditcard.dto.response.CardResponseDTO;
 import com.minibank.creditcard.dto.response.CustomerResponseDTO;
+import com.minibank.creditcard.exception.CustomerNotFoundException;
 import com.minibank.creditcard.exception.DuplicateNIKException;
 import com.minibank.creditcard.exception.DuplicatePhoneNumberException;
 import com.minibank.creditcard.mapper.CustomerMapper;
@@ -37,9 +38,9 @@ public class CustomerServiceImpl implements CustomerService {
     var cardDTO = registrationRequest.getCreateCardDTO();
 
     // Checks for exception
-    if (customerRepository.existsByNik(customerDTO.getNik())) {
+    if (isNIKTaken(customerDTO.getNik())) {
       throw new DuplicateNIKException(customerDTO.getNik());
-    } else if (customerRepository.existsByPhoneNumber(customerDTO.getPhoneNumber())) {
+    } else if (isPhoneNumberTaken(customerDTO.getPhoneNumber())) {
       throw new DuplicatePhoneNumberException(customerDTO.getPhoneNumber());
     }
 
@@ -76,7 +77,23 @@ public class CustomerServiceImpl implements CustomerService {
 
   @Override
   public CustomerResponseDTO getCustomerById(Long id) {
-    return null;
+    return CustomerMapper.mapCustomerToDTO(getCustomerEntityById(id));
+  }
+
+  @Override
+  public CustomerResponseDTO getCustomerByPhoneNumber(String phoneNumber) {
+    Customer customer = customerRepository.findByPhoneNumber(phoneNumber).orElseThrow(
+      () -> new CustomerNotFoundException("phoneNumber", phoneNumber)
+    );
+    return CustomerMapper.mapCustomerToDTO(customer);
+  }
+
+  @Override
+  public CustomerResponseDTO getCustomerByNIK(String nik) {
+    Customer customer = customerRepository.findByNik(nik).orElseThrow(
+      () -> new CustomerNotFoundException("NIK", nik)
+    );
+    return CustomerMapper.mapCustomerToDTO(customer);
   }
 
   @Override
@@ -85,42 +102,45 @@ public class CustomerServiceImpl implements CustomerService {
   }
 
   @Override
-  public CustomerResponseDTO updateCustomer(Long id, UpdateCustomerRequestDTO updateRequest) {
-    return null;
+  public CustomerResponseDTO updateCustomer(Long customerId, UpdateCustomerRequestDTO updateRequest) {
+    Customer customer = getCustomerEntityById(customerId);
+
+    // Check if updated phone number already exists in the database
+    if (isPhoneNumberTaken(updateRequest.getPhoneNumber())) {
+      throw new DuplicatePhoneNumberException(updateRequest.getPhoneNumber());
+    }
+
+    customer.setPhoneNumber(updateRequest.getPhoneNumber());
+    customer.setAddress(updateRequest.getAddress());
+    customer.setKycStatus(updateRequest.getKycStatus());
+    customer.setRiskProfile(updateRequest.getRiskProfile());
+
+    Customer updatedCustomer = customerRepository.save(customer);
+    return CustomerMapper.mapCustomerToDTO(updatedCustomer);
   }
 
   @Override
-  public void deleteCustomer(Long id) {
+  public CustomerResponseDTO updateKycStatus(Long customerId, Customer.KycStatus kycStatus) {
+    Customer customer = getCustomerEntityById(customerId);
+    customer.setKycStatus(kycStatus);
 
+    Customer updatedCustomer = customerRepository.save(customer);
+    return CustomerMapper.mapCustomerToDTO(updatedCustomer);
   }
 
   @Override
-  public boolean isPhoneNumberTaken(String phoneNumber) {
-    return false;
-  }
+  public CustomerResponseDTO updateRiskProfile(Long customerId, Customer.RiskProfile riskProfile) {
+    Customer customer = getCustomerEntityById(customerId);
+    customer.setRiskProfile(riskProfile);
 
-  @Override
-  public boolean isNIKTaken(String nik) {
-    return false;
-  }
-
-  @Override
-  public Optional<CustomerResponseDTO> getCustomerByPhoneNumber(String phoneNumber) {
-    return Optional.empty();
-  }
-
-  @Override
-  public CustomerResponseDTO updateKycStatus(Long customerId, Customer.KycStatus status) {
-    return null;
-  }
-
-  @Override
-  public CustomerResponseDTO updateRiskProfile(Long customerId, Customer.RiskProfile profile) {
-    return null;
+    Customer updatedCustomer = customerRepository.save(customer);
+    return CustomerMapper.mapCustomerToDTO(updatedCustomer);
   }
 
   @Override
   public List<CustomerResponseDTO> searchCustomersByName(String name) {
+    //TODO: To be continue
+    List<Customer> customers = customerRepository.findByFullNameContainingIgnoreCase(name);
     return List.of();
   }
 
@@ -131,7 +151,39 @@ public class CustomerServiceImpl implements CustomerService {
 
   @Override
   public CardResponseDTO updateCardStatus(Long customerId, Card.CardStatus newStatus) {
+
     return null;
+  }
+
+  @Override
+  public boolean deleteCustomer(Long id) {
+    Customer customer = getCustomerEntityById(id);
+    customer.getCard().setStatus(Card.CardStatus.DELETED);
+    customerRepository.save(customer);
+    return true;
+  }
+
+  // ------------------------------------------------------------------------------------------
+  // ------------------------------------------------------------------------------------------
+  // -------------------- -> Private Utility Function <- --------------------------------------
+  // ------------------------------------------------------------------------------------------
+  // ------------------------------------------------------------------------------------------
+
+  // function to reduce redundancy in fetching customer entity by id
+  private Customer getCustomerEntityById(Long customerId) {
+    return customerRepository.findById(customerId).orElseThrow(
+      () -> new CustomerNotFoundException("id", customerId)
+    );
+  }
+
+  // check duplicate phone number entry
+  private boolean isPhoneNumberTaken(String phoneNumber) {
+    return customerRepository.existsByPhoneNumber(phoneNumber);
+  }
+
+  // check duplicate NIK entry
+  private boolean isNIKTaken(String nik) {
+    return customerRepository.existsByNik(nik);
   }
 
 }

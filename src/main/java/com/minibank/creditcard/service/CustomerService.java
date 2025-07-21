@@ -15,7 +15,7 @@ import java.util.Optional;
 public interface CustomerService {
 
   // 1. Register a customer (with card creation)
-  public CustomerResponseDTO registerCustomer(CreateCustomerRequestDTO registrationRequest);
+  CustomerResponseDTO registerCustomer(CreateCustomerRequestDTO registrationRequest);
 
   // 2. Get customer by ID
   CustomerResponseDTO getCustomerById(Long id);
@@ -23,34 +23,31 @@ public interface CustomerService {
   // 3. Get all active customers
   Page<CustomerResponseDTO> getAllActiveCustomers(Pageable pageable);
 
-  // 4. Update customer profile
+  // 4. Get customer by phone number (used in login or lookup)
+  CustomerResponseDTO getCustomerByPhoneNumber(String phoneNumber);
+
+  // 5. Get customer by NIK (used in login or lookup)
+  CustomerResponseDTO getCustomerByNIK(String nik);
+
+  // 6. Update customer profile
   CustomerResponseDTO updateCustomer(Long id, UpdateCustomerRequestDTO updateRequest);
 
-  // 5. Delete customer (soft delete)
-  void deleteCustomer(Long id);
+  // 7. Delete customer (soft delete)
+  boolean deleteCustomer(Long id);
 
-  // 6. Check if phone number is already registered
-  boolean isPhoneNumberTaken(String phoneNumber);
-
-  // 7. Check if NIK is already registered
-  boolean isNIKTaken(String nik);
-
-  // 8. Get customer by phone number (used in login or lookup)
-  Optional<CustomerResponseDTO> getCustomerByPhoneNumber(String phoneNumber);
-
-  // 9. Update KYC status
+  // 8. Update KYC status
   CustomerResponseDTO updateKycStatus(Long customerId, Customer.KycStatus status);
 
-  // 10. Update Risk Profile
+  // 9. Update Risk Profile
   CustomerResponseDTO updateRiskProfile(Long customerId, Customer.RiskProfile profile);
 
-  // 11. Search customers by name (partial match)
+  // 10. Search customers by name (partial match)
   List<CustomerResponseDTO> searchCustomersByName(String name);
 
-  // 12. Get card info for a customer
+  // 11. Get card info for a customer
   CardResponseDTO getCardByCustomerId(Long customerId);
 
-  // 13. Block/activate/update card status
+  // 12. Block/activate/update card status
   CardResponseDTO updateCardStatus(Long customerId, Card.CardStatus newStatus);
 
 }

@@ -46,7 +46,7 @@ public class Card extends BaseEntity {
   private String expiryDate; // Format: MM/YY
 
   public enum CardStatus {
-    PENDING_APPROVAL, REJECTED, INACTIVE, ACTIVE, BLOCKED, EXPIRED
+    PENDING_APPROVAL, REJECTED, INACTIVE, ACTIVE, BLOCKED, EXPIRED, DELETED
   }
 
 }

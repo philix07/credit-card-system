@@ -1,7 +1,11 @@
 package com.minibank.creditcard.dto.request;
 
 import com.minibank.creditcard.model.Customer;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+@Getter
+@NoArgsConstructor
 public class UpdateCustomerRequestDTO {
 
   private String phoneNumber;
