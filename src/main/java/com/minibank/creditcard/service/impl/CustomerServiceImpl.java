@@ -1,8 +1,7 @@
 package com.minibank.creditcard.service.impl;
 
-import com.minibank.creditcard.dto.request.CreateCustomerRequestDTO;
-import com.minibank.creditcard.dto.request.UpdateCustomerRequestDTO;
-import com.minibank.creditcard.dto.response.CardResponseDTO;
+import com.minibank.creditcard.dto.request.customer.CreateCustomerRequestDTO;
+import com.minibank.creditcard.dto.request.customer.UpdateCustomerRequestDTO;
 import com.minibank.creditcard.dto.response.CustomerResponseDTO;
 import com.minibank.creditcard.exception.CustomerNotFoundException;
 import com.minibank.creditcard.exception.DuplicateNIKException;
@@ -10,27 +9,23 @@ import com.minibank.creditcard.exception.DuplicatePhoneNumberException;
 import com.minibank.creditcard.mapper.CustomerMapper;
 import com.minibank.creditcard.model.Card;
 import com.minibank.creditcard.model.Customer;
-import com.minibank.creditcard.repository.CardRepository;
 import com.minibank.creditcard.repository.CustomerRepository;
 import com.minibank.creditcard.service.CustomerService;
 import com.minibank.creditcard.util.CardUtil;
 import com.minibank.creditcard.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.awt.print.Pageable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class CustomerServiceImpl implements CustomerService {
 
   private final CustomerRepository customerRepository;
-  private final CardRepository cardRepository;
 
   @Override
   public CustomerResponseDTO registerCustomer(CreateCustomerRequestDTO registrationRequest) {
@@ -97,8 +92,73 @@ public class CustomerServiceImpl implements CustomerService {
   }
 
   @Override
+  public Page<CustomerResponseDTO> getCustomersByName(String name, Pageable pageable) {
+    Page<Customer> customers = customerRepository.findByFullNameContainingIgnoreCase(name, pageable);
+    if (customers.isEmpty()) {
+      throw new CustomerNotFoundException("name", name);
+    }
+
+    // Mapping Page<Customer> into List<CustomerResponseDTO>
+    return customers.map(CustomerMapper::mapCustomerToDTO);
+  }
+
+  @Override
+  public Page<CustomerResponseDTO> getCustomersByFilter(
+    String name,
+    Card.CardStatus cardStatus,
+    Customer.KycStatus kycStatus,
+    Customer.RiskProfile riskProfile,
+    Pageable pageable
+  ) {
+
+    // We have to create JPA Specs later to enable mixed parameter search
+
+    if (name != null) {
+      return customerRepository
+        .findByFullNameContainingIgnoreCase(name, pageable)
+        .map(CustomerMapper::mapCustomerToDTO);
+    } else if (cardStatus != null) {
+      return customerRepository
+        .findByCardStatus(cardStatus, pageable)
+        .map(CustomerMapper::mapCustomerToDTO);
+    } else if (kycStatus != null) {
+      return customerRepository
+        .findByKycStatus(kycStatus, pageable)
+        .map(CustomerMapper::mapCustomerToDTO);
+    } else if (riskProfile != null) {
+      return customerRepository
+        .findByRiskProfile(riskProfile, pageable)
+        .map(CustomerMapper::mapCustomerToDTO);
+    } else {
+      return customerRepository
+        .findAll(pageable)
+        .map(CustomerMapper::mapCustomerToDTO);
+    }
+  }
+
+
+  @Override
   public Page<CustomerResponseDTO> getAllActiveCustomers(Pageable pageable) {
-    return null;
+    Page<Customer> activeCustomers = customerRepository.findByCardStatus(Card.CardStatus.ACTIVE, pageable);
+    return activeCustomers.map(CustomerMapper::mapCustomerToDTO);
+  }
+
+  @Override
+  public Page<CustomerResponseDTO> getCustomersByCardStatus(Card.CardStatus cardStatus, Pageable pageable) {
+    Page<Customer> customerByCardStatus = customerRepository.findByCardStatus(cardStatus, pageable);
+    return customerByCardStatus.map(CustomerMapper::mapCustomerToDTO);
+  }
+
+  @Override
+  public Page<CustomerResponseDTO> getCustomersByKycStatus(Customer.KycStatus kycStatus, Pageable pageable) {
+    Page<Customer> customerByKycStatus = customerRepository.findByKycStatus(kycStatus, pageable);
+    return customerByKycStatus.map(CustomerMapper::mapCustomerToDTO);
+  }
+
+  @Override
+  public Page<CustomerResponseDTO> getCustomersByRiskProfile(Customer.RiskProfile riskProfile, Pageable pageable) {
+    Page<Customer> customerByRiskProfile = customerRepository.findByRiskProfile(riskProfile, pageable);
+    return customerByRiskProfile.map(CustomerMapper::mapCustomerToDTO);
   }
 
   @Override
@@ -135,24 +195,6 @@ public class CustomerServiceImpl implements CustomerService {
 
     Customer updatedCustomer = customerRepository.save(customer);
     return CustomerMapper.mapCustomerToDTO(updatedCustomer);
-  }
-
-  @Override
-  public List<CustomerResponseDTO> searchCustomersByName(String name) {
-    //TODO: To be continue
-    List<Customer> customers = customerRepository.findByFullNameContainingIgnoreCase(name);
-    return List.of();
-  }
-
-  @Override
-  public CardResponseDTO getCardByCustomerId(Long customerId) {
-    return null;
-  }
-
-  @Override
-  public CardResponseDTO updateCardStatus(Long customerId, Card.CardStatus newStatus) {
-
-    return null;
   }
 
   @Override

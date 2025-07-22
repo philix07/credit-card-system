@@ -1,4 +1,4 @@
-package com.minibank.creditcard.dto.request;
+package com.minibank.creditcard.dto.request.customer;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;

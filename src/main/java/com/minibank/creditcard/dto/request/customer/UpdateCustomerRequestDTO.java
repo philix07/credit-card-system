@@ -1,4 +1,4 @@
-package com.minibank.creditcard.dto.request;
+package com.minibank.creditcard.dto.request.customer;
 
 import com.minibank.creditcard.model.Customer;
 import lombok.Getter;

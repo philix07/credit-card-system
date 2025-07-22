@@ -5,8 +5,11 @@ import com.minibank.creditcard.model.Card;
 import com.minibank.creditcard.model.Customer;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
-import java.awt.print.Pageable;
+import org.springframework.data.domain.Pageable;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -25,16 +28,16 @@ public interface CustomerRepository extends JpaRepository<Customer, Long> {
   Optional<Customer> findByNik(String nik);
 
   // Search by name (partial match)
-  List<Customer> findByFullNameContainingIgnoreCase(String name);
+  Page<Customer> findByFullNameContainingIgnoreCase(String name, Pageable pageable);
 
   // Filtering by KycStatus
-  List<Customer> findByKycStatus(Customer.KycStatus status);
+  Page<Customer> findByKycStatus(Customer.KycStatus status, Pageable pageable);
 
   // Filtering by RiskProfile
-  List<Customer> findByRiskProfile(Customer.RiskProfile profile);
+  Page<Customer> findByRiskProfile(Customer.RiskProfile profile, Pageable pageable);
 
-  // Fetch only active customers with pagination
-  Page<Customer> findByStatus(Card.CardStatus status, Pageable pageable);
+  @Query("SELECT c FROM Customer c JOIN c.card card WHERE card.status = :status")
+  Page<Customer> findByCardStatus(@Param("status") Card.CardStatus status, Pageable pageable);
 
   @Override
   default void delete(Customer entity) {
