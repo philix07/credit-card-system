@@ -114,24 +114,19 @@ public class CustomerServiceImpl implements CustomerService {
     // We have to create JPA Specs later to enable mixed parameter search
 
     if (name != null) {
-      return customerRepository
-        .findByFullNameContainingIgnoreCase(name, pageable)
+      return customerRepository.findByFullNameContainingIgnoreCase(name, pageable)
         .map(CustomerMapper::mapCustomerToDTO);
     } else if (cardStatus != null) {
-      return customerRepository
-        .findByCardStatus(cardStatus, pageable)
+      return customerRepository.findByCardStatus(cardStatus, pageable)
         .map(CustomerMapper::mapCustomerToDTO);
     } else if (kycStatus != null) {
-      return customerRepository
-        .findByKycStatus(kycStatus, pageable)
+      return customerRepository.findByKycStatus(kycStatus, pageable)
         .map(CustomerMapper::mapCustomerToDTO);
     } else if (riskProfile != null) {
-      return customerRepository
-        .findByRiskProfile(riskProfile, pageable)
+      return customerRepository.findByRiskProfile(riskProfile, pageable)
         .map(CustomerMapper::mapCustomerToDTO);
     } else {
-      return customerRepository
-        .findAll(pageable)
+      return customerRepository.findAll(pageable)
         .map(CustomerMapper::mapCustomerToDTO);
     }
   }

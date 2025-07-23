@@ -5,11 +5,14 @@ import com.minibank.creditcard.dto.request.customer.UpdateCustomerRequestDTO;
 import com.minibank.creditcard.dto.request.customer.UpdateKycStatusRequestDTO;
 import com.minibank.creditcard.dto.request.customer.UpdateRiskProfileRequestDTO;
 import com.minibank.creditcard.dto.response.CustomerResponseDTO;
+import com.minibank.creditcard.model.Card;
 import com.minibank.creditcard.model.Customer;
 import com.minibank.creditcard.service.CustomerService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -45,17 +48,17 @@ public class CustomerController {
 
   @GetMapping(value = "customers/{id}", consumes = "application/json")
   public ResponseEntity<CustomerResponseDTO> getCustomerById(@PathVariable Long id) {
-
+    return ResponseEntity.ok(customerService.getCustomerById(id));
   }
 
   @GetMapping(value = "customers/{phoneNumber}", consumes = "application/json")
   public ResponseEntity<CustomerResponseDTO> getCustomerByPhoneNumber(@PathVariable String phoneNumber) {
-
+    return ResponseEntity.ok(customerService.getCustomerByPhoneNumber(phoneNumber));
   }
 
   @GetMapping(value = "customers/{nik}", consumes = "application/json")
   public ResponseEntity<CustomerResponseDTO> getCustomerByNIK(@PathVariable String nik) {
-
+    return ResponseEntity.ok(customerService.getCustomerByNIK(nik));
   }
 
   // ----------------------------------------------------------------------------------------------
@@ -63,8 +66,18 @@ public class CustomerController {
   // ----------------------------------------------------------------------------------------------
 
   @GetMapping(value = "customers/search", consumes = "application/json")
-  public ResponseEntity<Page<CustomerResponseDTO>> getCustomerByName(@PathVariable String name) {
-
+  public ResponseEntity<Page<CustomerResponseDTO>> getCustomerByName(
+    @RequestParam(required = false) String name,
+    @RequestParam(required = false) Card.CardStatus cardStatus,
+    @RequestParam(required = false) Customer.KycStatus kycStatus,
+    @RequestParam(required = false) Customer.RiskProfile riskProfile,
+    @RequestParam(defaultValue = "0") int page,
+    @RequestParam(defaultValue = "10") int size
+  ) {
+    Pageable pageable = PageRequest.of(page, size);
+    // fix the methods later
+    Page<CustomerResponseDTO> customers = customerService.findCustomers(name, cardStatus, kycStatus, riskProfile, pageable);
+    return ResponseEntity.ok(customers);
   }
 
   // ----------------------------------------------------------------------------------------------
